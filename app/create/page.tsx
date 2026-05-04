@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
+import { supabase } from "@/lib/supabaseClient";
 export default function CreatePage() {
   const router = useRouter();
 
@@ -24,18 +24,20 @@ export default function CreatePage() {
     setLoading(true);
 
     try {
-      // 🔥 For now we simulate saving (later DB will go here)
-      const newPost = {
-        id: Date.now().toString(),
-        title,
-        content,
-      };
+      const { error } = await supabase.from("posts").insert([
+        {
+          title,
+          content,
+        },
+      ]);
 
-      // store in localStorage (temporary database)
-      const existing = JSON.parse(localStorage.getItem("posts") || "[]");
-      localStorage.setItem("posts", JSON.stringify([newPost, ...existing]));
+      if (error) {
+        console.log(error);
+        alert("Failed to create post");
+        return;
+      }
 
-      // redirect to blogs
+      // success → go to blogs
       router.push("/blogs");
     } catch (err) {
       console.error(err);

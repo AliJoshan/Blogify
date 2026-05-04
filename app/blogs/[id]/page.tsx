@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { notFound, useParams } from "next/navigation";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { supabase } from "@/lib/supabaseClient";
 
 type Post = {
   id: string;
@@ -18,14 +19,23 @@ export default function BlogPostPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedPosts: Post[] = JSON.parse(
-      localStorage.getItem("posts") || "[]",
-    );
+    const fetchPost = async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-    const foundPost = storedPosts.find((p) => p.id === id);
+      if (error) {
+        console.error(error);
+      } else {
+        setPost(data);
+      }
 
-    setPost(foundPost || null);
-    setLoading(false);
+      setLoading(false);
+    };
+
+    fetchPost();
   }, [id]);
 
   if (loading) {
@@ -42,7 +52,7 @@ export default function BlogPostPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-20">
-      {/* TITLE SECTION */}
+      {/* TITLE */}
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
           {post.title}

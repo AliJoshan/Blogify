@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { supabase } from "@/lib/supabaseClient";
 
 type Post = {
   id: string;
@@ -13,17 +14,41 @@ type Post = {
 
 export default function BlogsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-    setPosts(storedPosts);
+    const fetchPosts = async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+      } else {
+        setPosts(data || []);
+      }
+
+      setLoading(false);
+    };
+
+    fetchPosts();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-16">
+        <p className="text-muted-foreground">Loading posts...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-16">
       {/* HEADER */}
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight">Blogs</h1>
+
         <p className="mt-2 text-muted-foreground">
           Explore ideas, stories, and insights from the community.
         </p>
@@ -33,6 +58,7 @@ export default function BlogsPage() {
       {posts.length === 0 ? (
         <div className="rounded-lg border border-dashed p-12 text-center">
           <h2 className="text-lg font-semibold">No posts yet</h2>
+
           <p className="mt-2 text-sm text-muted-foreground">
             Be the first to create something meaningful.
           </p>
@@ -45,7 +71,6 @@ export default function BlogsPage() {
           </Link>
         </div>
       ) : (
-        /* POSTS GRID */
         <div className="grid gap-6 md:grid-cols-2">
           {posts.map((post) => (
             <Link key={post.id} href={`/blogs/${post.id}`}>
