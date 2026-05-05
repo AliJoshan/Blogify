@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function SignupPage() {
 
   const handleSignup = async () => {
     if (!email || !password) {
-      alert("Please fill all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
@@ -32,16 +33,16 @@ export default function SignupPage() {
       });
 
       if (error) {
-        alert(error.message);
+        toast.error(error.message);
         return;
       }
 
-      alert("Account created successfully");
+      toast.success("Account created successfully");
 
       router.push("/login");
     } catch (err) {
       console.error(err);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
