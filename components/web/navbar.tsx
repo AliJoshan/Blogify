@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/app/hooks/useAuth";
+import { ThemeToggle } from "./theme-toggle";
 
 const navLinks = [
   {
@@ -41,14 +42,14 @@ export default function Navbar() {
   };
 
   return (
-    <header className="border-b bg-background">
+    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
         {/* LEFT SIDE */}
         <Link href="/" className="text-xl font-bold tracking-tight">
           Blogify
         </Link>
 
-        {/* DESKTOP NAVIGATION */}
+        {/* CENTER NAVIGATION */}
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <Link
@@ -61,8 +62,12 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* DESKTOP BUTTONS */}
+        {/* RIGHT SIDE */}
         <div className="hidden items-center gap-3 md:flex">
+          {/* THEME TOGGLE */}
+          <ThemeToggle />
+
+          {/* AUTH BUTTONS */}
           {user ? (
             <Button variant="outline" onClick={handleLogout}>
               Logout
@@ -104,8 +109,15 @@ export default function Navbar() {
                   ))}
                 </nav>
 
-                {/* MOBILE BUTTONS */}
-                <div className="flex flex-col gap-3 pt-4">
+                {/* MOBILE THEME */}
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-sm text-muted-foreground">Theme</span>
+
+                  <ThemeToggle />
+                </div>
+
+                {/* MOBILE AUTH */}
+                <div className="flex flex-col gap-3 pt-2">
                   {user ? (
                     <Button variant="outline" onClick={handleLogout}>
                       Logout
