@@ -10,6 +10,7 @@ type Post = {
   id: string;
   title: string;
   content: string;
+  user_id: string;
 };
 
 export default function BlogsPage() {
@@ -20,7 +21,7 @@ export default function BlogsPage() {
     const fetchPosts = async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*")
+        .select("id, title, content, user_id")
         .order("created_at", { ascending: false });
 
       if (error) {

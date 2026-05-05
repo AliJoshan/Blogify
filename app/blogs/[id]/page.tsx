@@ -10,6 +10,7 @@ type Post = {
   id: string;
   title: string;
   content: string;
+  user_id: string;
 };
 
 export default function BlogPostPage() {
@@ -22,7 +23,7 @@ export default function BlogPostPage() {
     const fetchPost = async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*")
+        .select("id, title, content, user_id")
         .eq("id", id)
         .single();
 
@@ -59,7 +60,7 @@ export default function BlogPostPage() {
         </h1>
 
         <p className="mt-3 text-sm text-muted-foreground">
-          Written by Ali Anas Joshan
+          Author ID: {post.user_id}
         </p>
       </div>
 

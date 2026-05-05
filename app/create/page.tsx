@@ -49,7 +49,7 @@ export default function CreatePage() {
         {
           title,
           content,
-          user_id: user?.id, // IMPORTANT (future-proofing)
+          user_id: user?.id,
         },
       ]);
 
