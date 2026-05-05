@@ -6,6 +6,10 @@ import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useAuth } from "@/app/hooks/useAuth";
 
 const navLinks = [
   {
@@ -27,6 +31,15 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logged out successfully");
+    router.push("/");
+  };
+
   return (
     <header className="border-b bg-background">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
@@ -50,13 +63,21 @@ export default function Navbar() {
 
         {/* DESKTOP BUTTONS */}
         <div className="hidden items-center gap-3 md:flex">
-          <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
-          </Button>
+          {user ? (
+            <Button variant="outline" onClick={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/login">Login</Link>
+              </Button>
 
-          <Button asChild>
-            <Link href="/signup">Sign Up</Link>
-          </Button>
+              <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* MOBILE MENU */}
@@ -85,13 +106,21 @@ export default function Navbar() {
 
                 {/* MOBILE BUTTONS */}
                 <div className="flex flex-col gap-3 pt-4">
-                  <Button variant="outline" asChild>
-                    <Link href="/login">Login</Link>
-                  </Button>
+                  {user ? (
+                    <Button variant="outline" onClick={handleLogout}>
+                      Logout
+                    </Button>
+                  ) : (
+                    <>
+                      <Button variant="outline" asChild>
+                        <Link href="/login">Login</Link>
+                      </Button>
 
-                  <Button asChild>
-                    <Link href="/signup">Sign Up</Link>
-                  </Button>
+                      <Button asChild>
+                        <Link href="/signup">Sign Up</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </SheetContent>
