@@ -1,49 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
 import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
+import { useAuth } from "../hooks/useAuth";
+
 export default function CreatePage() {
   const router = useRouter();
 
+  const { user, loading: authLoading } = useAuth();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast.error("You must be logged in to create a post");
+      router.push("/login");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted-foreground">Checking authentication...</p>
+      </div>
+    );
+  }
 
   const handlePublish = async () => {
     if (!title.trim() || !content.trim()) {
-      alert("Title and content are required");
+      toast.error("Title and content are required");
       return;
     }
 
-    setLoading(true);
+    setIsSubmitting(true);
 
     try {
       const { error } = await supabase.from("posts").insert([
         {
           title,
           content,
+          user_id: user?.id, // IMPORTANT (future-proofing)
         },
       ]);
 
       if (error) {
         console.log(error);
-        alert("Failed to create post");
+        toast.error("Failed to create post");
         return;
       }
 
-      // success → go to blogs
+      toast.success("Post created successfully");
+
       router.push("/blogs");
     } catch (err) {
       console.error(err);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -58,7 +81,6 @@ export default function CreatePage() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* TITLE */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Title</label>
             <Input
@@ -68,7 +90,6 @@ export default function CreatePage() {
             />
           </div>
 
-          {/* CONTENT */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Content</label>
             <Textarea
@@ -79,9 +100,12 @@ export default function CreatePage() {
             />
           </div>
 
-          {/* BUTTON */}
-          <Button onClick={handlePublish} disabled={loading} className="w-full">
-            {loading ? "Publishing..." : "Publish Post"}
+          <Button
+            onClick={handlePublish}
+            disabled={isSubmitting}
+            className="w-full"
+          >
+            {isSubmitting ? "Publishing..." : "Publish Post"}
           </Button>
         </CardContent>
       </Card>
