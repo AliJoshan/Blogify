@@ -1,0 +1,81 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { supabase } from "@/lib/supabaseClient";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+export default function LoginPage() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="mx-auto flex min-h-[80vh] max-w-md items-center px-4">
+      <Card className="w-full">
+        <CardHeader>
+          <h1 className="text-2xl font-bold">Welcome Back</h1>
+
+          <p className="text-sm text-muted-foreground">
+            Login to continue to Blogify.
+          </p>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          <Input
+            type="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <Input
+            type="password"
+            placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <Button onClick={handleLogin} disabled={loading} className="w-full">
+            {loading ? "Logging in..." : "Login"}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
