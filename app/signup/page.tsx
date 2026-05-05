@@ -13,13 +13,14 @@ import { toast } from "sonner";
 export default function SignupPage() {
   const router = useRouter();
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
-    if (!email || !password) {
+    if (!username || !email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -27,10 +28,24 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
+
+      if (data.user) {
+        const { error: profileError } = await supabase.from("profiles").insert([
+          {
+            id: data.user.id,
+            username,
+          },
+        ]);
+
+        if (profileError) {
+          toast.error(profileError.message);
+          return;
+        }
+      }
 
       if (error) {
         toast.error(error.message);
@@ -60,6 +75,12 @@ export default function SignupPage() {
         </CardHeader>
 
         <CardContent className="space-y-4">
+          <Input
+            type="text"
+            placeholder="Choose a username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
           <Input
             type="email"
             placeholder="Enter email"

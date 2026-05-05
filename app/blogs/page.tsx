@@ -10,7 +10,9 @@ type Post = {
   id: string;
   title: string;
   content: string;
-  user_id: string;
+  profiles: {
+    username: string;
+  }[];
 };
 
 export default function BlogsPage() {
@@ -21,7 +23,14 @@ export default function BlogsPage() {
     const fetchPosts = async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("id, title, content, user_id")
+        .select(
+          `
+  id,
+  title,
+  content,
+  profiles(username)
+`,
+        )
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -85,6 +94,9 @@ export default function BlogsPage() {
                     ? post.content.slice(0, 120) + "..."
                     : post.content}
                 </CardContent>
+                <p className="mt-4 text-xs text-muted-foreground">
+                  By post.profiles[0]?.username
+                </p>
               </Card>
             </Link>
           ))}
