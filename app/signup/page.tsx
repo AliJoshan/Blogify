@@ -37,9 +37,9 @@ export default function SignupPage() {
         return;
       }
 
-      toast.success("Account created successfully");
-
-      router.push("/login");
+      toast.success(
+        "Account created! Check your email to confirm before logging in.",
+      );
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong");
