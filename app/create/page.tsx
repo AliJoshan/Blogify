@@ -96,7 +96,7 @@ export default function CreatePage() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your blog content..."
-              className="min-h-[200px]"
+              className="min-h-50"
             />
           </div>
 
