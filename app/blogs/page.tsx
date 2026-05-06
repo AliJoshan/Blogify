@@ -10,9 +10,6 @@ type Post = {
   id: string;
   title: string;
   content: string;
-  profiles: {
-    username: string;
-  }[];
 };
 
 export default function BlogsPage() {
@@ -21,23 +18,24 @@ export default function BlogsPage() {
 
   useEffect(() => {
     const fetchPosts = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+
+      const userId = userData.user?.id;
+
+      if (!userId) {
+        setPosts([]);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("posts")
-        .select(
-          `
-  id,
-  title,
-  content,
-  profiles(username)
-`,
-        )
+        .select("id, title, content")
+        .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error(error);
-      } else {
-        setPosts(data || []);
-      }
+      if (error) console.error(error);
+      else setPosts(data || []);
 
       setLoading(false);
     };
@@ -94,9 +92,6 @@ export default function BlogsPage() {
                     ? post.content.slice(0, 120) + "..."
                     : post.content}
                 </CardContent>
-                <p className="mt-4 text-xs text-muted-foreground">
-                  By post.profiles[0]?.username
-                </p>
               </Card>
             </Link>
           ))}
