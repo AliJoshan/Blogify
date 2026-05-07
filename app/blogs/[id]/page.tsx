@@ -58,10 +58,6 @@ export default function BlogPostPage() {
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
           {post.title}
         </h1>
-
-        <p className="mt-3 text-sm text-muted-foreground">
-          Author ID: {post.user_id}
-        </p>
       </div>
 
       {/* CONTENT */}
