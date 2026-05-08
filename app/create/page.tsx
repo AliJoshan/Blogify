@@ -8,6 +8,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Bold, Italic, Heading1, List } from "lucide-react";
 
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
@@ -106,7 +107,47 @@ export default function CreatePage() {
           <div className="space-y-2">
             <label className="text-sm font-medium">Content</label>
 
-            <div className="rounded-md border">
+            <div className="flex flex-wrap gap-2 rounded-t-md border border-b-0 p-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => editor?.chain().focus().toggleBold().run()}
+              >
+                <Bold className="h-4 w-4" />
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => editor?.chain().focus().toggleItalic().run()}
+              >
+                <Italic className="h-4 w-4" />
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() =>
+                  editor?.chain().focus().toggleHeading({ level: 1 }).run()
+                }
+              >
+                <Heading1 className="h-4 w-4" />
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => editor?.chain().focus().toggleBulletList().run()}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="rounded-b-md border">
               <EditorContent editor={editor} />
             </div>
           </div>
