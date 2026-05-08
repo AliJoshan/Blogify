@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
@@ -18,8 +19,18 @@ export default function CreatePage() {
   const { user, loading: authLoading } = useAuth();
 
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: "",
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        class: "min-h-[300px] rounded-md border p-4 focus:outline-none",
+      },
+    },
+  });
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -37,7 +48,9 @@ export default function CreatePage() {
   }
 
   const handlePublish = async () => {
-    if (!title.trim() || !content.trim()) {
+    const html = editor?.getHTML() || "";
+
+    if (!title.trim() || !html.trim()) {
       toast.error("Title and content are required");
       return;
     }
@@ -48,7 +61,7 @@ export default function CreatePage() {
       const { error } = await supabase.from("posts").insert([
         {
           title,
-          content,
+          content: html,
           user_id: user?.id,
         },
       ]);
@@ -92,12 +105,10 @@ export default function CreatePage() {
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Content</label>
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Write your blog content..."
-              className="min-h-50"
-            />
+
+            <div className="rounded-md border">
+              <EditorContent editor={editor} />
+            </div>
           </div>
 
           <Button
