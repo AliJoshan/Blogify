@@ -51,6 +51,10 @@ export default function BlogsPage() {
     );
   }
 
+  const stripHtml = (html: string) => {
+    return html.replace(/<[^>]*>/g, "");
+  };
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-16">
       {/* HEADER */}
@@ -88,9 +92,9 @@ export default function BlogsPage() {
                 </CardHeader>
 
                 <CardContent className="text-sm text-muted-foreground">
-                  {post.content.length > 120
-                    ? post.content.slice(0, 120) + "..."
-                    : post.content}
+                  {stripHtml(post.content).length > 120
+                    ? stripHtml(post.content).slice(0, 120) + "..."
+                    : stripHtml(post.content)}
                 </CardContent>
               </Card>
             </Link>

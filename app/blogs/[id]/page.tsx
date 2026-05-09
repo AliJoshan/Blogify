@@ -63,9 +63,10 @@ export default function BlogPostPage() {
       {/* CONTENT */}
       <Card>
         <CardContent className="p-6">
-          <p className="whitespace-pre-wrap text-base leading-7 text-foreground">
-            {post.content}
-          </p>
+          <div
+            className="prose max-w-none text-base leading-7 text-foreground"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </CardContent>
       </Card>
     </div>
