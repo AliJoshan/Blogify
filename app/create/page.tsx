@@ -12,12 +12,19 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Bold,
   Italic,
-  Heading1,
   List,
   AlignLeft,
   AlignCenter,
   AlignRight,
 } from "lucide-react";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
@@ -25,6 +32,7 @@ import { useAuth } from "../hooks/useAuth";
 
 export default function CreatePage() {
   const router = useRouter();
+  const [blockType, setBlockType] = useState("paragraph");
 
   const { user, loading: authLoading } = useAuth();
 
@@ -33,14 +41,17 @@ export default function CreatePage() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
     ],
     content: "",
     immediatelyRender: false,
-    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         class: "min-h-[300px] rounded-md border p-4 focus:outline-none",
@@ -141,20 +152,43 @@ export default function CreatePage() {
                 <Italic className="h-4 w-4" />
               </Button>
 
-              <Button
-                type="button"
-                variant={
-                  editor?.isActive("heading", { level: 1 })
-                    ? "default"
-                    : "outline"
-                }
-                size="icon"
-                onClick={() =>
-                  editor?.chain().focus().toggleHeading({ level: 1 }).run()
-                }
+              <Select
+                value={blockType}
+                onValueChange={(value) => {
+                  if (!editor) return;
+
+                  setBlockType(value);
+
+                  editor.chain().focus().clearNodes().run();
+
+                  if (value === "paragraph") {
+                    editor.chain().focus().setParagraph().run();
+                  }
+
+                  if (value === "1") {
+                    editor.chain().focus().setHeading({ level: 1 }).run();
+                  }
+
+                  if (value === "2") {
+                    editor.chain().focus().setHeading({ level: 2 }).run();
+                  }
+
+                  if (value === "3") {
+                    editor.chain().focus().setHeading({ level: 3 }).run();
+                  }
+                }}
               >
-                <Heading1 className="h-4 w-4" />
-              </Button>
+                <SelectTrigger className="w-35">
+                  <SelectValue placeholder="Text Style" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="paragraph">Paragraph</SelectItem>
+                  <SelectItem value="1">Heading 1</SelectItem>
+                  <SelectItem value="2">Heading 2</SelectItem>
+                  <SelectItem value="3">Heading 3</SelectItem>
+                </SelectContent>
+              </Select>
 
               <Button
                 type="button"
@@ -211,7 +245,7 @@ export default function CreatePage() {
             </div>
 
             <div className="rounded-b-md border">
-              <EditorContent editor={editor} />
+              <EditorContent editor={editor} className="prose-editor" />
             </div>
           </div>
 
