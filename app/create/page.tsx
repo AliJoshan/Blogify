@@ -6,9 +6,18 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import TextAlign from "@tiptap/extension-text-align";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Bold, Italic, Heading1, List } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  Heading1,
+  List,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+} from "lucide-react";
 
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
@@ -23,9 +32,15 @@ export default function CreatePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+    ],
     content: "",
     immediatelyRender: false,
+    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         class: "min-h-[300px] rounded-md border p-4 focus:outline-none",
@@ -110,7 +125,7 @@ export default function CreatePage() {
             <div className="flex flex-wrap gap-2 rounded-t-md border border-b-0 p-2">
               <Button
                 type="button"
-                variant="outline"
+                variant={editor?.isActive("bold") ? "default" : "outline"}
                 size="icon"
                 onClick={() => editor?.chain().focus().toggleBold().run()}
               >
@@ -119,7 +134,7 @@ export default function CreatePage() {
 
               <Button
                 type="button"
-                variant="outline"
+                variant={editor?.isActive("italic") ? "default" : "outline"}
                 size="icon"
                 onClick={() => editor?.chain().focus().toggleItalic().run()}
               >
@@ -128,7 +143,11 @@ export default function CreatePage() {
 
               <Button
                 type="button"
-                variant="outline"
+                variant={
+                  editor?.isActive("heading", { level: 1 })
+                    ? "default"
+                    : "outline"
+                }
                 size="icon"
                 onClick={() =>
                   editor?.chain().focus().toggleHeading({ level: 1 }).run()
@@ -139,11 +158,55 @@ export default function CreatePage() {
 
               <Button
                 type="button"
-                variant="outline"
+                variant={editor?.isActive("bulletList") ? "default" : "outline"}
                 size="icon"
                 onClick={() => editor?.chain().focus().toggleBulletList().run()}
               >
                 <List className="h-4 w-4" />
+              </Button>
+
+              <Button
+                type="button"
+                variant={
+                  editor?.isActive({ textAlign: "left" })
+                    ? "default"
+                    : "outline"
+                }
+                size="icon"
+                onClick={() =>
+                  editor?.chain().focus().setTextAlign("left").run()
+                }
+              >
+                <AlignLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant={
+                  editor?.isActive({ textAlign: "center" })
+                    ? "default"
+                    : "outline"
+                }
+                size="icon"
+                onClick={() =>
+                  editor?.chain().focus().setTextAlign("center").run()
+                }
+              >
+                <AlignCenter className="h-4 w-4" />
+              </Button>
+
+              <Button
+                type="button"
+                variant={
+                  editor?.isActive({ textAlign: "right" })
+                    ? "default"
+                    : "outline"
+                }
+                size="icon"
+                onClick={() =>
+                  editor?.chain().focus().setTextAlign("right").run()
+                }
+              >
+                <AlignRight className="h-4 w-4" />
               </Button>
             </div>
 
