@@ -27,6 +27,12 @@ export default function EditPostPage() {
     content: "",
   });
 
+  useEffect(() => {
+    if (!editor || !post?.content) return;
+
+    editor.commands.setContent(post.content);
+  }, [editor, post]);
+
   // fetch post
   useEffect(() => {
     const fetchPost = async () => {
@@ -45,12 +51,6 @@ export default function EditPostPage() {
 
     fetchPost();
   }, [id]);
-
-  useEffect(() => {
-    if (editor && post?.content) {
-      editor.commands.setContent(post.content);
-    }
-  }, [editor, post]);
 
   const handleUpdate = async () => {
     const html = editor?.getHTML() || "";
