@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { supabase } from "@/lib/supabaseClient";
 import { BlogCardSkeleton } from "@/components/web/blog-card-skeleton";
 import { EmptyState } from "@/components/web/empty-state";
+import { ErrorState } from "@/components/web/error-state";
 
 type Post = {
   id: string;
@@ -15,6 +16,7 @@ type Post = {
 };
 
 export default function BlogsPage() {
+  const [error, setError] = useState<string | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,8 +38,12 @@ export default function BlogsPage() {
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
-      if (error) console.error(error);
-      else setPosts(data || []);
+      if (error) {
+        console.error(error);
+        setError("Failed to load posts.");
+      } else {
+        setPosts(data || []);
+      }
 
       setLoading(false);
     };
@@ -61,6 +67,18 @@ export default function BlogsPage() {
             <BlogCardSkeleton key={index} />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-16">
+        <ErrorState
+          title="Unable to load posts"
+          description="There was a problem fetching blog posts. Please try again later."
+          retry={() => window.location.reload()}
+        />
       </div>
     );
   }
