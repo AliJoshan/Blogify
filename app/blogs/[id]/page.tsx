@@ -81,6 +81,16 @@ export default function BlogPostPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-20">
+      {/* BACK BUTTON */}
+      <div className="mb-6">
+        <button
+          onClick={() => router.push("/blogs")}
+          className="px-4 py-2 text-sm border rounded-md hover:bg-muted transition"
+        >
+          ← Back to Blogs
+        </button>
+      </div>
+
       {/* TITLE */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
