@@ -9,6 +9,7 @@ import { BlogCardSkeleton } from "@/components/web/blog-card-skeleton";
 import { EmptyState } from "@/components/web/empty-state";
 import { ErrorState } from "@/components/web/error-state";
 import { formatDate, timeAgo } from "@/lib/time";
+import { useSearch } from "../context/search-context";
 
 type Post = {
   id: string;
@@ -21,6 +22,7 @@ export default function BlogsPage() {
   const [error, setError] = useState<string | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const { search, setSearch } = useSearch();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -89,6 +91,12 @@ export default function BlogsPage() {
     return html.replace(/<[^>]*>/g, "");
   };
 
+  const filteredPosts = posts.filter(
+    (post) =>
+      post.title.toLowerCase().includes(search.toLowerCase()) ||
+      stripHtml(post.content).toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-16">
       {/* HEADER */}
@@ -101,7 +109,7 @@ export default function BlogsPage() {
       </div>
 
       {/* EMPTY STATE */}
-      {posts.length === 0 ? (
+      {filteredPosts.length === 0 ? (
         <EmptyState
           title="No posts yet"
           description="Be the first to create something meaningful."
@@ -110,7 +118,7 @@ export default function BlogsPage() {
         />
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <Link key={post.id} href={`/blogs/${post.id}`}>
               <Card className="h-full transition hover:shadow-md">
                 <CardHeader className="space-y-1">

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/app/hooks/useAuth";
 import { ThemeToggle } from "./theme-toggle";
+import { useSearch } from "@/app/context/search-context";
 
 const navLinks = [
   {
@@ -34,6 +35,7 @@ const navLinks = [
 export default function Navbar() {
   const { user } = useAuth();
   const router = useRouter();
+  const { search, setSearch } = useSearch();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -64,6 +66,13 @@ export default function Navbar() {
 
         {/* RIGHT SIDE */}
         <div className="hidden items-center gap-3 md:flex">
+          <input
+            type="text"
+            placeholder="Search blogs..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="hidden md:block w-48 rounded-md border px-2 py-1 text-sm"
+          />
           {/* THEME TOGGLE */}
           <ThemeToggle />
 

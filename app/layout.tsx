@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/web/theme-provider";
 import Navbar from "@/components/web/navbar";
 
 import { Toaster } from "sonner";
+import { SearchProvider } from "./context/search-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,9 +26,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="en"
@@ -36,9 +37,11 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ThemeProvider>
-          <Navbar />
+          <SearchProvider>
+            <Navbar />
 
-          <main>{children}</main>
+            <main>{children}</main>
+          </SearchProvider>
 
           <Toaster richColors position="top-right" />
         </ThemeProvider>
