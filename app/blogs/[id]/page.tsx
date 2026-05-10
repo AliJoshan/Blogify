@@ -6,6 +6,7 @@ import { notFound, useParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/lib/supabaseClient";
 import DOMPurify from "dompurify";
+import { BlogPostSkeleton } from "@/components/web/blog-post-skeleton";
 
 type Post = {
   id: string;
@@ -68,11 +69,7 @@ export default function BlogPostPage() {
   };
 
   if (loading) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-20">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
+    return <BlogPostSkeleton />;
   }
 
   if (!post) {
