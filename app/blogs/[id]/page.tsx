@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/lib/supabaseClient";
 import DOMPurify from "dompurify";
 import { BlogPostSkeleton } from "@/components/web/blog-post-skeleton";
+import { ErrorState } from "@/components/web/error-state";
 
 type Post = {
   id: string;
@@ -22,6 +23,7 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // get user
   useEffect(() => {
@@ -44,6 +46,8 @@ export default function BlogPostPage() {
 
       if (error) {
         console.error(error);
+        setError("Failed to load post.");
+        setPost(null);
       } else {
         setPost(data);
       }
@@ -70,6 +74,18 @@ export default function BlogPostPage() {
 
   if (loading) {
     return <BlogPostSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20">
+        <ErrorState
+          title="Failed to load post"
+          description="We couldn't fetch this blog post. It might be a network issue or the post is temporarily unavailable."
+          retry={() => window.location.reload()}
+        />
+      </div>
+    );
   }
 
   if (!post) {
