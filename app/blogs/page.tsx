@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { supabase } from "@/lib/supabaseClient";
 import { BlogCardSkeleton } from "@/components/web/blog-card-skeleton";
+import { EmptyState } from "@/components/web/empty-state";
 
 type Post = {
   id: string;
@@ -81,20 +82,12 @@ export default function BlogsPage() {
 
       {/* EMPTY STATE */}
       {posts.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-12 text-center">
-          <h2 className="text-lg font-semibold">No posts yet</h2>
-
-          <p className="mt-2 text-sm text-muted-foreground">
-            Be the first to create something meaningful.
-          </p>
-
-          <Link
-            href="/create"
-            className="mt-4 inline-block text-sm font-medium text-primary underline"
-          >
-            Create a post →
-          </Link>
-        </div>
+        <EmptyState
+          title="No posts yet"
+          description="Be the first to create something meaningful."
+          buttonText="Create a post →"
+          href="/create"
+        />
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
           {posts.map((post) => (
