@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { supabase } from "@/lib/supabaseClient";
+import { BlogCardSkeleton } from "@/components/web/blog-card-skeleton";
 
 type Post = {
   id: string;
@@ -46,7 +47,19 @@ export default function BlogsPage() {
   if (loading) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-16">
-        <p className="text-muted-foreground">Loading posts...</p>
+        {/* HEADER SKELETON */}
+        <div className="mb-10 space-y-3">
+          <div className="h-10 w-40 rounded-md bg-muted animate-pulse" />
+
+          <div className="h-4 w-72 rounded-md bg-muted animate-pulse" />
+        </div>
+
+        {/* POSTS SKELETON */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <BlogCardSkeleton key={index} />
+          ))}
+        </div>
       </div>
     );
   }
