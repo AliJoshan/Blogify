@@ -8,11 +8,13 @@ import { supabase } from "@/lib/supabaseClient";
 import { BlogCardSkeleton } from "@/components/web/blog-card-skeleton";
 import { EmptyState } from "@/components/web/empty-state";
 import { ErrorState } from "@/components/web/error-state";
+import { formatDate, timeAgo } from "@/lib/time";
 
 type Post = {
   id: string;
   title: string;
   content: string;
+  created_at: string;
 };
 
 export default function BlogsPage() {
@@ -34,7 +36,7 @@ export default function BlogsPage() {
 
       const { data, error } = await supabase
         .from("posts")
-        .select("id, title, content")
+        .select("id, title, content, created_at")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
@@ -111,8 +113,12 @@ export default function BlogsPage() {
           {posts.map((post) => (
             <Link key={post.id} href={`/blogs/${post.id}`}>
               <Card className="h-full transition hover:shadow-md">
-                <CardHeader className="text-lg font-semibold">
-                  {post.title}
+                <CardHeader className="space-y-1">
+                  <div className="text-lg font-semibold">{post.title}</div>
+
+                  <div className="text-xs text-muted-foreground">
+                    {formatDate(post.created_at)} · {timeAgo(post.created_at)}
+                  </div>
                 </CardHeader>
 
                 <CardContent className="text-sm text-muted-foreground">

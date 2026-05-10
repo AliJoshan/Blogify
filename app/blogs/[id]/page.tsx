@@ -8,12 +8,14 @@ import { supabase } from "@/lib/supabaseClient";
 import DOMPurify from "dompurify";
 import { BlogPostSkeleton } from "@/components/web/blog-post-skeleton";
 import { ErrorState } from "@/components/web/error-state";
+import { formatDate, timeAgo } from "@/lib/time";
 
 type Post = {
   id: string;
   title: string;
   content: string;
   user_id: string;
+  created_at: string;
 };
 
 export default function BlogPostPage() {
@@ -40,7 +42,7 @@ export default function BlogPostPage() {
     const fetchPost = async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("id, title, content, user_id")
+        .select("id, title, content, user_id, created_at")
         .eq("id", id)
         .single();
 
@@ -109,6 +111,11 @@ export default function BlogPostPage() {
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
           {post.title}
         </h1>
+      </div>
+
+      {/* META */}
+      <div className="mb-6 text-sm text-muted-foreground">
+        Published {formatDate(post.created_at)} · {timeAgo(post.created_at)}
       </div>
 
       {/* ACTIONS (EDIT / DELETE) */}
