@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { Menu } from "lucide-react";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabaseClient";
@@ -104,6 +110,10 @@ export default function Navbar() {
             </SheetTrigger>
 
             <SheetContent side="right" className="w-[280px]">
+              <SheetHeader>
+                <SheetTitle>Navigation Menu</SheetTitle>
+              </SheetHeader>
+
               <div className="mt-8 flex flex-col gap-6">
                 {/* MOBILE LINKS */}
                 <nav className="flex flex-col gap-4">
