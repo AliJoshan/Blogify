@@ -8,6 +8,7 @@ import Navbar from "@/components/web/navbar";
 
 import { Toaster } from "sonner";
 import { SearchProvider } from "./context/search-context";
+import Footer from "@/components/web/footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,15 +37,18 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable}`}
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <ThemeProvider>
-          <SearchProvider>
-            <Navbar />
+        <div className="flex min-h-screen flex-col">
+          <ThemeProvider>
+            <SearchProvider>
+              <Navbar />
 
-            <main>{children}</main>
-          </SearchProvider>
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </SearchProvider>
 
-          <Toaster richColors position="top-right" />
-        </ThemeProvider>
+            <Toaster richColors position="top-right" />
+          </ThemeProvider>
+        </div>
       </body>
     </html>
   );
