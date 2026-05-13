@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 export default function SignupPage() {
   const router = useRouter();
+  const supabase = createClient();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

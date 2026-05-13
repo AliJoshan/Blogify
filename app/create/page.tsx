@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { useAuth } from "../hooks/useAuth";
 
@@ -35,6 +35,7 @@ export default function CreatePage() {
   const [blockType, setBlockType] = useState("paragraph");
 
   const { user, loading: authLoading } = useAuth();
+  const supabase = createClient();
 
   const [title, setTitle] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
