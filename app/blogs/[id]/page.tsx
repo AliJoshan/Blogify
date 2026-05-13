@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 import DOMPurify from "dompurify";
 import { BlogPostSkeleton } from "@/components/web/blog-post-skeleton";
 import { ErrorState } from "@/components/web/error-state";
@@ -30,6 +30,7 @@ export default function BlogPostPage() {
   // get user
   useEffect(() => {
     const getUser = async () => {
+      const supabase = createClient();
       const { data } = await supabase.auth.getUser();
       setCurrentUserId(data.user?.id || null);
     };
@@ -40,6 +41,7 @@ export default function BlogPostPage() {
   // fetch post
   useEffect(() => {
     const fetchPost = async () => {
+      const supabase = createClient();
       const { data, error } = await supabase
         .from("posts")
         .select("id, title, content, user_id, created_at")
@@ -64,6 +66,7 @@ export default function BlogPostPage() {
     const confirmDelete = confirm("Are you sure you want to delete this post?");
     if (!confirmDelete) return;
 
+    const supabase = createClient();
     const { error } = await supabase.from("posts").delete().eq("id", id);
 
     if (error) {

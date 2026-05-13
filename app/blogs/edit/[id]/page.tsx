@@ -8,7 +8,7 @@ import TextAlign from "@tiptap/extension-text-align";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 
 export default function EditPostPage() {
   const { id } = useParams<{ id: string }>();
@@ -36,13 +36,22 @@ export default function EditPostPage() {
   // fetch post
   useEffect(() => {
     const fetchPost = async () => {
-      const { data } = await supabase
+      const { data, error } = await createClient()
         .from("posts")
         .select("title, content, user_id")
         .eq("id", id)
         .single();
 
-      if (!data) return;
+      if (error) {
+        console.error(error);
+        setLoading(false);
+        return;
+      }
+
+      if (!data) {
+        setLoading(false);
+        return;
+      }
 
       setPost(data);
       setTitle(data.title);
@@ -55,7 +64,7 @@ export default function EditPostPage() {
   const handleUpdate = async () => {
     const html = editor?.getHTML() || "";
 
-    const { error } = await supabase
+    const { error } = await createClient()
       .from("posts")
       .update({
         title,

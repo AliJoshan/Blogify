@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/app/hooks/useAuth";
@@ -44,7 +44,7 @@ export default function Navbar() {
   const { search, setSearch } = useSearch();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    const supabase = createClient();
     toast.success("Logged out successfully");
     router.push("/");
   };

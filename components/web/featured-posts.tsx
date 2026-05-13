@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 
 type Post = {
   id: string;
@@ -20,7 +20,7 @@ export default function FeaturedPosts() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data, error } = await supabase
+      const { data, error } = await createClient()
         .from("posts")
         .select("id, title, content, created_at")
         .order("created_at", { ascending: false })
