@@ -29,12 +29,21 @@ export default function Hero() {
         </p>
 
         {/* buttons */}
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="lg">
+        <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <Button
+            asChild
+            size="lg"
+            className="h-12 w-full px-8 text-base sm:w-auto"
+          >
             <Link href="/blogs">Explore Blogs</Link>
           </Button>
 
-          <Button variant="outline" size="lg" asChild>
+          <Button
+            variant="outline"
+            size="lg"
+            asChild
+            className="h-12 w-full px-8 text-base sm:w-auto"
+          >
             <Link href="/create">Start Writing</Link>
           </Button>
         </div>
