@@ -45,10 +45,15 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     const supabase = createClient();
+
+    await supabase.auth.signOut();
+
     toast.success("Logged out successfully");
+
+    router.refresh();
+
     router.push("/");
   };
-
   return (
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
@@ -104,33 +109,46 @@ export default function Navbar() {
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="rounded-full">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
 
-            <SheetContent side="right" className="w-70">
+            <SheetContent side="right" className="w-[300px] sm:w-[350px]">
               <SheetHeader>
                 <SheetTitle>Navigation Menu</SheetTitle>
               </SheetHeader>
 
-              <div className="mt-8 flex flex-col gap-6">
+              <div className="mt-8 flex flex-col gap-8 px-1">
                 {/* MOBILE LINKS */}
-                <nav className="flex flex-col gap-4">
+                <nav className="flex flex-col gap-2">
                   {navLinks.map((link) => (
                     <Link
                       key={link.name}
                       href={link.href}
-                      className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-foreground active:scale-[0.98]"
                     >
                       {link.name}
                     </Link>
                   ))}
                 </nav>
 
+                {/* MOBILE SEARCH */}
+                <div className="px-1">
+                  <input
+                    type="text"
+                    placeholder="Search blogs..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+
                 {/* MOBILE THEME */}
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-sm text-muted-foreground">Theme</span>
+                <div className="flex items-center justify-between rounded-lg border px-4 py-3">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Theme
+                  </span>
 
                   <ThemeToggle />
                 </div>
@@ -138,16 +156,24 @@ export default function Navbar() {
                 {/* MOBILE AUTH */}
                 <div className="flex flex-col gap-3 pt-2">
                   {user ? (
-                    <Button variant="outline" onClick={handleLogout}>
+                    <Button
+                      variant="outline"
+                      onClick={handleLogout}
+                      className="h-11 rounded-lg"
+                    >
                       Logout
                     </Button>
                   ) : (
                     <>
-                      <Button variant="outline" asChild>
+                      <Button
+                        variant="outline"
+                        asChild
+                        className="h-11 rounded-lg"
+                      >
                         <Link href="/login">Login</Link>
                       </Button>
 
-                      <Button asChild>
+                      <Button asChild className="h-11 rounded-lg">
                         <Link href="/signup">Sign Up</Link>
                       </Button>
                     </>

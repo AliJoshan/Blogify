@@ -8,7 +8,7 @@ export default function Hero() {
     <section className="relative flex items-center justify-center overflow-hidden py-24 md:py-32">
       {/* subtle background glow */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-1/2 h-75 w-75 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl md:h-[500px] md:w-[500px]" />
+        <div className="absolute left-1/2 top-1/2 h-75 w-75 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl md:h-125 md:w-125" />
       </div>
 
       <div className="mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
