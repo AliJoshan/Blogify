@@ -9,6 +9,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabaseClient";
+import EditPostSkeleton from "@/components/web/EditPostSkeleton";
 
 export default function EditPostPage() {
   const { id } = useParams<{ id: string }>();
@@ -80,7 +81,7 @@ export default function EditPostPage() {
     router.push(`/blogs/${id}`);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <EditPostSkeleton />;
 
   return (
     <div className="max-w-3xl mx-auto py-10 space-y-4">
